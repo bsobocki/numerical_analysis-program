@@ -1,8 +1,7 @@
-from spline_interpolation import Spline
-from menu_bar import Menu_Bar
-from drawing_panel import Drawing_Panel_Curve
-from settings_panels import Settings_Frame
-from constants import *
+from window_tools.menu_bar import Menu_Bar
+from window_tools.drawing_panel.constants import *
+from window_tools.drawing_panel.drawing_panel import Drawing_Panel_Curve
+from window_tools.settings_panels.settings_panels import Settings_Frame
 
 import sys
 
@@ -45,42 +44,42 @@ class Image_Interpolation(QMainWindow):
 
 
         self._new_button = self._create_button(
-            QIcon("plus_icon.png"), 
+            QIcon("icons/plus_icon.png"), 
             SPLINE_DRAWING_PANEL_Y,
             self._drawing_panel.new_curve,
             "Add a new curve"
         )
 
         self._reset_button = self._create_button(
-            QIcon("X_icon.png"), 
+            QIcon("icons/X_icon.png"), 
             self._new_button.y() + self._new_button.height() + 10,
             self._drawing_panel.reset,
             "Delete all points"
         )
 
         self._open_spline_button = self._create_button(
-            QIcon("open_spline_icon.png"),
+            QIcon("icons/open_spline_icon.png"),
             self._reset_button.y() + self._reset_button.height() + 10,
             self.open_curve,
             "Load a new curve from file *.json"
         )
 
         self._save_button = self._create_button(
-            QIcon("save_icon.png"),
+            QIcon("icons/save_icon.png"),
             self._open_spline_button.y() + self._open_spline_button.height() + 10,
             self.save_curve,
             "Save points to the JSON file"
         )
 
         self._open_file_button = self._create_button(
-            QIcon("open_icon.png"),
+            QIcon("icons/open_icon.png"),
             self._save_button.y() + self._save_button.height() + 40,
             self.open_img,
             "Open a new background file"
         )
 
         self._reset_file_button = self._create_button(
-            QIcon("reset_img_icon.png"),
+            QIcon("icons/reset_img_icon.png"),
             self._open_file_button.y() + self._open_file_button.height() + 10,
             self.reset_img,
             "Delete background image"
@@ -91,6 +90,9 @@ class Image_Interpolation(QMainWindow):
             SPLINE_WINDOW_Y, 
             SPLINE_WINDOW_WIDTH, 
             SPLINE_WINDOW_HEIGHT)
+
+        self.setWindowTitle("Spline Interpolation")
+
 
     def _create_button(self, icon, y, action, tooltip):
         button = QPushButton(self)
@@ -104,6 +106,7 @@ class Image_Interpolation(QMainWindow):
     def open_img(self):
         dlg = QFileDialog()
         dlg.setFileMode(QFileDialog.AnyFile)
+        dlg.setWindowTitle("Open Background Image")
 
         if dlg.exec_():
             filenames = dlg.selectedFiles()
@@ -112,6 +115,7 @@ class Image_Interpolation(QMainWindow):
     def open_curve(self):
         dlg = QFileDialog()
         dlg.setFileMode(QFileDialog.AnyFile)
+        dlg.setWindowTitle("Open Curve")
 
         if dlg.exec_():
             filenames = dlg.selectedFiles()
@@ -121,6 +125,7 @@ class Image_Interpolation(QMainWindow):
     def save_curve(self):
         dlg = QFileDialog()
         dlg.setFileMode(QFileDialog.AnyFile)
+        dlg.setWindowTitle("Save Curve")
 
         if dlg.exec_():
             filenames = dlg.selectedFiles()

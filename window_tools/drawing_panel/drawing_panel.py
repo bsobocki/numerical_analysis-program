@@ -1,5 +1,5 @@
-from spline_curve import *
-from constants import *
+from window_tools.drawing_panel.numerical_tools.spline_curve import *
+from window_tools.drawing_panel.constants import *
 
 from PyQt5.QtWidgets import QGraphicsScene, QGraphicsView, QLabel
 from PyQt5.QtGui import QBrush, QPixmap, QPainter, QPen, QColor

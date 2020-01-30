@@ -1,5 +1,5 @@
-from constants import *
-from setting_color_panel import Setting_Color_Panel
+from window_tools.settings_panels.constants import *
+from window_tools.settings_panels.setting_color_panel import Setting_Color_Panel
 
 from PyQt5.QtWidgets import QLabel, QFrame, QWidget, QSpinBox, QCheckBox
 from PyQt5.QtGui import QBrush, QPixmap, QPainter, QPen, QColor, QPalette

@@ -1,4 +1,4 @@
-from constants import *
+from window_tools.settings_panels.constants import *
 
 from PyQt5.QtWidgets import QLabel, QFrame, QWidget, QSpinBox
 from PyQt5.QtGui import QBrush, QPixmap, QPainter, QPen, QColor, QPalette
