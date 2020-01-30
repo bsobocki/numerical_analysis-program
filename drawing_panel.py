@@ -10,13 +10,13 @@ class Drawing_Panel_Curve(QGraphicsView):
     def __init__(self, parent):
         super().__init__(parent)
         self._curves_visibility = True 
-        self._points_visibility = True
+        self._objects_points_visibility = True
 
         self.setScene(QGraphicsScene(self))
 
-        self._points = []
-        self._current_curve = []
-        self._curves = []
+        self._objects_points = [[]]
+        self._current_curve_index = 0
+        self._curves = [[]]
 
         self._pixmap = None
         self._pixmap_pos = []
@@ -75,9 +75,17 @@ class Drawing_Panel_Curve(QGraphicsView):
         return self._point_pen.getColor()
 
 
-    def new_curve(sefl):
-        self._curves.append(self._current_curve.copy())
-        self._current_curve = []
+    def new_curve(self):
+        self._current_curve_index += 1
+        self._objects_points.append([])
+        self._curves.append([])
+
+    
+    def reset(self):
+        self._curves = [[]]
+        self._objects_points = [[]]
+        self._current_curve_index = 0
+        self._redraw()
 
 
     def set_img(self, src):
@@ -99,13 +107,14 @@ class Drawing_Panel_Curve(QGraphicsView):
 
 
     def mousePressEvent(self, event):
-        self._points.append( (event.pos().x() - self._pixmap_pos[0], event.pos().y() - self._pixmap_pos[1] ) )
+        print(self._current_curve_index)
+        self._objects_points[self._current_curve_index].append( (event.pos().x() - self._pixmap_pos[0], event.pos().y() - self._pixmap_pos[1] ) )
         self._update_curve()
         self._redraw()
 
 
     def _update_curve(self):
-        points = self._points
+        points = self._objects_points[self._current_curve_index]
         if len(points) > 1 :
             x = [p[0] for p in points]
             y = [p[1] for p in points]
@@ -119,7 +128,7 @@ class Drawing_Panel_Curve(QGraphicsView):
             ys = [y for y in ys]
 
             # update curve
-            self._current_curve = [QLineF(xs[i-1], ys[i-1], xs[i], ys[i]) for i in range(1, len(xs))]
+            self._curves[self._current_curve_index] = [QLineF(xs[i-1], ys[i-1], xs[i], ys[i]) for i in range(1, len(xs))]
 
 
     def _redraw(self):
@@ -131,14 +140,16 @@ class Drawing_Panel_Curve(QGraphicsView):
 
 
     def _draw_curve(self):
-            if self._curves_visibility:
-                for line in self._current_curve:
+        if self._curves_visibility:
+            for curve in self._curves:
+                for line in curve:
                     self.scene().addLine(line, pen=self._curve_pen)  
 
 
     def _draw_points(self):
-            if self._points_visibility:
-                for point in self._points:
+        if self._objects_points_visibility:
+            for points in self._objects_points:
+                for point in points:
                     self.scene().addEllipse(point[0], point[1], 6, 6, self._point_pen)  
                     self.scene().addEllipse(point[0], point[1], 2, 2, self._point_pen)  
 
@@ -149,5 +160,5 @@ class Drawing_Panel_Curve(QGraphicsView):
 
 
     def set_points_visibility(self, visibility):
-        self._points_visibility = visibility
+        self._objects_points_visibility = visibility
         self._redraw()

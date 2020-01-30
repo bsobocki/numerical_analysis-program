@@ -8,7 +8,7 @@ import sys
 from PyQt5 import QtCore
 from PyQt5.QtCore import Qt, QSize
 from PyQt5.QtGui import QPainter, QColor, QPen, QImage, QPalette, QBrush, QPixmap, QPicture
-from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QSizePolicy, QGraphicsView, QGraphicsScene, QMainWindow
+from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QSizePolicy, QGraphicsView, QGraphicsScene, QMainWindow, QPushButton
 
 class Image_Interpolation(QMainWindow):
     loaded_image = None
@@ -42,6 +42,21 @@ class Image_Interpolation(QMainWindow):
         self._settings_frame_points.set_change_point_visibility_function(
             lambda visibility: self._drawing_panel.set_points_visibility( visibility )
         )
+
+        self._reset_button = QPushButton(self)
+        self._reset_button.setText("Reset")
+        self._reset_button.move(13, 555)
+        self._reset_button.clicked.connect(self._drawing_panel.reset)
+
+        self._new_button = QPushButton(self)
+        self._new_button.setText("New")
+        self._new_button.move(150, 555)
+        self._new_button.clicked.connect(self._drawing_panel.new_curve)
+
+        self._save_button = QPushButton(self)
+        self._save_button.setText("New")
+        self._save_button.move(150, 555)
+        self._save_button.clicked.connect(self._drawing_panel.new_curve)
 
         self.setGeometry(
             SPLINE_WINDOW_X, 
