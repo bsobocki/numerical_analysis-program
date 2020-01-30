@@ -5,6 +5,8 @@ from PyQt5.QtWidgets import QGraphicsScene, QGraphicsView, QLabel
 from PyQt5.QtGui import QBrush, QPixmap, QPainter, QPen, QColor
 from PyQt5.QtCore import Qt, QLineF, QRectF, QRect, QSize, QPointF
 
+import json
+
 
 class Drawing_Panel_Curve(QGraphicsView):
     def __init__(self, parent):
@@ -15,8 +17,6 @@ class Drawing_Panel_Curve(QGraphicsView):
         self.setScene(QGraphicsScene(self))
 
         self._objects_points = [[]]
-        self._current_curve_index = 0
-        self._curves = [[]]
 
         self._pixmap = None
         self._pixmap_pos = []
@@ -76,7 +76,6 @@ class Drawing_Panel_Curve(QGraphicsView):
 
 
     def new_curve(self):
-        self._current_curve_index += 1
         self._objects_points.append([])
         self._curves.append([])
 
@@ -84,8 +83,22 @@ class Drawing_Panel_Curve(QGraphicsView):
     def reset(self):
         self._curves = [[]]
         self._objects_points = [[]]
-        self._current_curve_index = 0
         self._redraw()
+
+    def open(self):
+        with open('data.json', 'r') as file:
+            data = file.read()
+        obj = json.loads(data)
+        self._objects_points = obj["objects_points"]
+        self._objects_points.append([])
+        self._redraw()
+
+
+    def save(self):
+        _json = json.dumps( {"objects_points" : self._objects_points} )
+        f = open("data.json","w")
+        f.write(_json)
+        f.close()
 
 
     def set_img(self, src):
@@ -107,43 +120,33 @@ class Drawing_Panel_Curve(QGraphicsView):
 
 
     def mousePressEvent(self, event):
-        print(self._current_curve_index)
-        self._objects_points[self._current_curve_index].append( (event.pos().x() - self._pixmap_pos[0], event.pos().y() - self._pixmap_pos[1] ) )
-        self._update_curve()
+        index = len(self._objects_points)-1
+        self._objects_points[index].append( (event.pos().x() - self._pixmap_pos[0], event.pos().y() - self._pixmap_pos[1] ) )
         self._redraw()
 
 
-    def _update_curve(self):
-        points = self._objects_points[self._current_curve_index]
-        if len(points) > 1 :
-            x = [p[0] for p in points]
-            y = [p[1] for p in points]
+    def _draw_curves(self):
+        for obj in self._objects_points:
+            if len(obj) > 1 :
+                x = [p[0] for p in obj]
+                y = [p[1] for p in obj]
 
-            s = Spline_Curve(x, y)
+                s = Spline_Curve(x, y)
 
-            """ values of interpolating functions: sx and sy """
-            xs, ys = s.get_xs_ys()
+                """ values of interpolating functions: sx and sy """
+                xs, ys = s.get_xs_ys()
 
-            xs = [x for x in xs]
-            ys = [y for y in ys]
-
-            # update curve
-            self._curves[self._current_curve_index] = [QLineF(xs[i-1], ys[i-1], xs[i], ys[i]) for i in range(1, len(xs))]
+                for i in range(1, len(xs)):
+                    line = QLineF(xs[i-1], ys[i-1], xs[i], ys[i]) 
+                    self.scene().addLine(line, pen=self._curve_pen) 
 
 
     def _redraw(self):
         self._reset_scene()  
-        self._update_curve()
-        self._draw_curve()
+        self._draw_curves()
         self._draw_points()
         self.update()
-
-
-    def _draw_curve(self):
-        if self._curves_visibility:
-            for curve in self._curves:
-                for line in curve:
-                    self.scene().addLine(line, pen=self._curve_pen)  
+                     
 
 
     def _draw_points(self):

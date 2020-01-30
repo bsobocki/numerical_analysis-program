@@ -5,6 +5,7 @@ from settings_panels import Settings_Frame
 from constants import *
 
 import sys
+
 from PyQt5 import QtCore
 from PyQt5.QtCore import Qt, QSize
 from PyQt5.QtGui import QPainter, QColor, QPen, QImage, QPalette, QBrush, QPixmap, QPicture
@@ -54,9 +55,14 @@ class Image_Interpolation(QMainWindow):
         self._new_button.clicked.connect(self._drawing_panel.new_curve)
 
         self._save_button = QPushButton(self)
-        self._save_button.setText("New")
-        self._save_button.move(150, 555)
-        self._save_button.clicked.connect(self._drawing_panel.new_curve)
+        self._save_button.setText("Save")
+        self._save_button.move(350, 555)
+        self._save_button.clicked.connect(self._drawing_panel.save)
+
+        self._save_button = QPushButton(self)
+        self._save_button.setText("Open")
+        self._save_button.move(450, 555)
+        self._save_button.clicked.connect(self._drawing_panel.open)
 
         self.setGeometry(
             SPLINE_WINDOW_X, 
