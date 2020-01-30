@@ -8,8 +8,8 @@ import sys
 
 from PyQt5 import QtCore
 from PyQt5.QtCore import Qt, QSize
-from PyQt5.QtGui import QPainter, QColor, QPen, QImage, QPalette, QBrush, QPixmap, QPicture
-from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QSizePolicy, QGraphicsView, QGraphicsScene, QMainWindow, QPushButton
+from PyQt5.QtGui import QPainter, QColor, QPen, QImage, QPalette, QBrush, QPixmap, QPicture, QIcon
+from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QSizePolicy, QGraphicsView, QGraphicsScene, QMainWindow, QPushButton, QFileDialog
 
 class Image_Interpolation(QMainWindow):
     loaded_image = None
@@ -26,9 +26,8 @@ class Image_Interpolation(QMainWindow):
         self._menu_bar.set_spline_creator_action(self.new_spline_creation_project)
         
         self._drawing_panel = Drawing_Panel_Curve(self)
-        self._drawing_panel.set_img("smile.png")
         
-        self._settings_frame_curves = Settings_Frame(self, "Curve", DEFAULT_CURVE_COLOR, (SETTINGS_PANEL_CURVE_X, SETTINGS_PANEL_CURVE_Y), 'up')
+        self._settings_frame_curves = Settings_Frame(self, "Curve", DEFAULT_CURVE_COLOR, (SPLINE_SETTINGS_PANEL_CURVE_X, SPLINE_SETTINGS_PANEL_CURVE_Y), 'up')
         self._settings_frame_curves.set_change_curve_color_function( 
             lambda color:  self._drawing_panel.set_curve_color(color) 
         )
@@ -36,7 +35,7 @@ class Image_Interpolation(QMainWindow):
             lambda visibility: self._drawing_panel.set_curves_visibility( visibility )
         )
         
-        self._settings_frame_points = Settings_Frame(self, "Point", DEFAULT_POINT_COLOR, (SETTINGS_PANEL_POINT_X, SETTINGS_PANEL_POINT_Y), 'down')
+        self._settings_frame_points = Settings_Frame(self, "Point", DEFAULT_POINT_COLOR, (SPLINE_SETTINGS_PANEL_POINT_X, SPLINE_SETTINGS_PANEL_POINT_Y), 'down')
         self._settings_frame_points.set_change_point_color_function( 
             lambda color:  self._drawing_panel.set_point_color(color) 
         )
@@ -44,25 +43,36 @@ class Image_Interpolation(QMainWindow):
             lambda visibility: self._drawing_panel.set_points_visibility( visibility )
         )
 
-        self._reset_button = QPushButton(self)
-        self._reset_button.setText("Reset")
-        self._reset_button.move(13, 555)
-        self._reset_button.clicked.connect(self._drawing_panel.reset)
+        self._reset_button = self._create_button(
+            QIcon("X_icon.png"), 
+            SPLINE_DRAWING_PANEL_Y, 
+            self._drawing_panel.reset
+        )
 
-        self._new_button = QPushButton(self)
-        self._new_button.setText("New")
-        self._new_button.move(150, 555)
-        self._new_button.clicked.connect(self._drawing_panel.new_curve)
+        self._new_button = self._create_button(
+            QIcon("plus_icon.png"), 
+            self._reset_button.y() + self._reset_button.height() + 10,
+            self._drawing_panel.new_curve
+        )
 
-        self._save_button = QPushButton(self)
-        self._save_button.setText("Save")
-        self._save_button.move(350, 555)
-        self._save_button.clicked.connect(self._drawing_panel.save)
+        self._save_button = self._create_button(
+            QIcon("save_icon.png"),
+            self._new_button.y() + self._new_button.height() + 10,
+            self._drawing_panel.save
+        )
 
-        self._save_button = QPushButton(self)
-        self._save_button.setText("Open")
-        self._save_button.move(450, 555)
-        self._save_button.clicked.connect(self._drawing_panel.open)
+
+        self._open_spline_button = self._create_button(
+            QIcon("open_spline_icon.png"),
+            self._save_button.y() + self._save_button.height() + 10,
+            self._drawing_panel.open
+        )
+
+        self._open_button = self._create_button(
+            QIcon("open_icon.png"),
+            self._open_spline_button.y() + self._open_spline_button.height() + 10,
+            self.open_img
+        )
 
         self.setGeometry(
             SPLINE_WINDOW_X, 
@@ -70,7 +80,25 @@ class Image_Interpolation(QMainWindow):
             SPLINE_WINDOW_WIDTH, 
             SPLINE_WINDOW_HEIGHT)
 
-    
+    def _create_button(self, icon, y, action):
+        button = QPushButton(self)
+        button.setIcon(icon)
+        button.move(10, y)
+        button.resize(30,30)
+        button.clicked.connect(action)
+        return button
+
+    def open_img(self):
+        dlg = QFileDialog()
+        dlg.setFileMode(QFileDialog.AnyFile)
+
+        if dlg.exec_():
+            filenames = dlg.selectedFiles()
+            self._drawing_panel.set_img(filenames[0])
+
+
+
+
     # Actions
 
     def new_spline_creation_project(self):

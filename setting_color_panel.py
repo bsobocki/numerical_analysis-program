@@ -13,7 +13,7 @@ class Setting_Color_Panel(QWidget):
         self._type = type # 'up' / 'down'
 
         self.move(x, y)
-        self.resize(SETTINGS_PANEL_WIDTH, 80)
+        self.resize(SPLINE_SETTINGS_PANEL_WIDTH, 80)
 
         self._labels = []
 

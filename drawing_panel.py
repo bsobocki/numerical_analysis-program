@@ -39,10 +39,10 @@ class Drawing_Panel_Curve(QGraphicsView):
 
     def _init_drawing_panel(self):
         self.setGeometry(
-            DRAWING_PANEL_X, 
-            DRAWING_PANEL_Y, 
-            DRAWING_PANEL_WIDTH, 
-            DRAWING_PANEL_HEIGHT)
+            SPLINE_DRAWING_PANEL_X, 
+            SPLINE_DRAWING_PANEL_Y, 
+            SPLINE_DRAWING_PANEL_WIDTH, 
+            SPLINE_DRAWING_PANEL_HEIGHT)
         self.setMouseTracking(True)
 
 
@@ -77,11 +77,9 @@ class Drawing_Panel_Curve(QGraphicsView):
 
     def new_curve(self):
         self._objects_points.append([])
-        self._curves.append([])
 
     
     def reset(self):
-        self._curves = [[]]
         self._objects_points = [[]]
         self._redraw()
 
@@ -102,14 +100,17 @@ class Drawing_Panel_Curve(QGraphicsView):
 
 
     def set_img(self, src):
+        self.scene().clear()
         self._pixmap = QPixmap(src)
         self.scene().addPixmap(self._pixmap)
 
         sr, vr = self.sceneRect().getRect(), self.rect().getRect()
         self._pixmap_pos = ( (vr[2]-sr[2])/2, (vr[3]-sr[3])/2 )  
 
-        self.setSceneRect(QRectF(0, 0, self._pixmap.width(), self._pixmap.height()))
+        self.setSceneRect(QRectF(0, 0, self.width(), self.height()))
         
+        self._draw_curves()
+        self._draw_points()
         self.update()
         
 
@@ -126,19 +127,27 @@ class Drawing_Panel_Curve(QGraphicsView):
 
 
     def _draw_curves(self):
-        for obj in self._objects_points:
-            if len(obj) > 1 :
-                x = [p[0] for p in obj]
-                y = [p[1] for p in obj]
+        if self._curves_visibility:
+            for obj in self._objects_points:
+                if len(obj) > 1 :
+                    x = [p[0] for p in obj]
+                    y = [p[1] for p in obj]
 
-                s = Spline_Curve(x, y)
+                    s = Spline_Curve(x, y)
 
-                """ values of interpolating functions: sx and sy """
-                xs, ys = s.get_xs_ys()
+                    """ values of interpolating functions: sx and sy """
+                    xs, ys = s.get_xs_ys()
 
-                for i in range(1, len(xs)):
-                    line = QLineF(xs[i-1], ys[i-1], xs[i], ys[i]) 
-                    self.scene().addLine(line, pen=self._curve_pen) 
+                    for i in range(1, len(xs)):
+                        line = QLineF(xs[i-1], ys[i-1], xs[i], ys[i]) 
+                        self.scene().addLine(line, pen=self._curve_pen) 
+
+
+    def _draw_points(self):
+        if self._objects_points_visibility:
+            for points in self._objects_points:
+                for point in points:
+                    self.scene().addEllipse(point[0], point[1], 4, 4, self._point_pen)  
 
 
     def _redraw(self):
@@ -147,15 +156,6 @@ class Drawing_Panel_Curve(QGraphicsView):
         self._draw_points()
         self.update()
                      
-
-
-    def _draw_points(self):
-        if self._objects_points_visibility:
-            for points in self._objects_points:
-                for point in points:
-                    self.scene().addEllipse(point[0], point[1], 6, 6, self._point_pen)  
-                    self.scene().addEllipse(point[0], point[1], 2, 2, self._point_pen)  
-
 
     def set_curves_visibility(self, visibility):
         self._curves_visibility = visibility

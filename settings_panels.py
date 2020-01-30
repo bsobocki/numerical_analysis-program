@@ -36,8 +36,8 @@ class Settings_Frame(QWidget):
       self.setGeometry(
          pos[0], 
          pos[1], 
-         SETTINGS_PANEL_WIDTH, 
-         SETTINGS_PANEL_HEIGHT)
+         SPLINE_SETTINGS_PANEL_WIDTH, 
+         SPLINE_SETTINGS_PANEL_HEIGHT)
 
 
    def _change_visibility(self, visibility):
