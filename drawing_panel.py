@@ -18,7 +18,7 @@ class Drawing_Panel_Curve(QGraphicsView):
 
         self._objects_points = [[]]
 
-        self._pixmap = None
+        self._pixmap_src = None
         self._pixmap_pos = []
         
         self._curve_pen = QPen()
@@ -83,8 +83,8 @@ class Drawing_Panel_Curve(QGraphicsView):
         self._objects_points = [[]]
         self._redraw()
 
-    def open(self):
-        with open('data.json', 'r') as file:
+    def open(self, src):
+        with open(src, 'r') as file:
             data = file.read()
         obj = json.loads(data)
         self._objects_points = obj["objects_points"]
@@ -92,22 +92,23 @@ class Drawing_Panel_Curve(QGraphicsView):
         self._redraw()
 
 
-    def save(self):
+    def save(self, src):
         _json = json.dumps( {"objects_points" : self._objects_points} )
-        f = open("data.json","w")
+        f = open(src,"w")
         f.write(_json)
         f.close()
 
 
     def set_img(self, src):
         self.scene().clear()
-        self._pixmap = QPixmap(src)
-        self.scene().addPixmap(self._pixmap)
+        self._pixmap_src = src
+        if src != "" :
+            self.scene().addPixmap(QPixmap(self._pixmap_src))
 
-        sr, vr = self.sceneRect().getRect(), self.rect().getRect()
-        self._pixmap_pos = ( (vr[2]-sr[2])/2, (vr[3]-sr[3])/2 )  
+            sr, vr = self.sceneRect().getRect(), self.rect().getRect()
+            self._pixmap_pos = ( (vr[2]-sr[2])/2, (vr[3]-sr[3])/2 )  
 
-        self.setSceneRect(QRectF(0, 0, self.width(), self.height()))
+        self.setSceneRect(QRectF(0, 0, self.width()-20, self.height()-20))
         
         self._draw_curves()
         self._draw_points()
@@ -116,7 +117,7 @@ class Drawing_Panel_Curve(QGraphicsView):
 
     def _reset_scene(self):
         self.scene().clear()
-        self.set_img(self._pixmap)      
+        self.set_img(self._pixmap_src)      
 
 
 
