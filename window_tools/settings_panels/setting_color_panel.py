@@ -7,41 +7,42 @@ from PyQt5 import QtGui
 
 
 class Setting_Color_Panel(QWidget):
-    def __init__(self, parent, x, y, default_color, type):
+    def __init__(self, parent, default_color, type):
         super().__init__(parent)
 
         self._type = type # 'up' / 'down'
 
-        self.move(x, y)
         self.resize(SPLINE_SETTINGS_PANEL_WIDTH, 80)
 
         self._labels = []
 
-        self._circle = (170, 15, 50, 50)
+        self._circle = (140, 15, 50, 50)
         self._color = default_color
 
-        self._add_label("red:", (30,0,70,20))
+        self._add_label("red:")
         self._red_sp = self._create_spin_box(0, self._color.red(), self.change_red_event)
 
-        self._add_label("green:", (30,30,70,20))
+        self._add_label("green:")
         self._green_sp = self._create_spin_box(30, self._color.green(), self.change_green_event)
         
-        self._add_label("blue:", (30,60,70,20))
+        self._add_label("blue:")
         self._blue_sp = self._create_spin_box(60, self._color.blue(), self.change_blue_event)
 
-
     
-    def _add_label(self, text, rect):
+    def _add_label(self, text):
+        n = len(self._labels)
+
         label = QLabel(self)
         label.setText(text)
-        label.move(rect[0], rect[1])
-        label.resize(rect[2], rect[3])
+        label.move(0, n*30)
+        label.resize(70, 20)
+
         self._labels.append(label)
 
 
     def _create_spin_box(self, y, color, valueChanged):
         sp = QSpinBox(self)
-        sp.move(90, y)
+        sp.move(60, y)
         sp.resize(60, 20)
         sp.setMinimum(0)
         sp.setMaximum(255)

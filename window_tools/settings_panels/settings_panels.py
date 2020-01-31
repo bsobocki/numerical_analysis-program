@@ -10,47 +10,40 @@ from PyQt5 import QtGui
 class Settings_Frame(QWidget):
    def __init__(self, parent, title, default_color, pos, type):
       super().__init__(parent)
-
       self._type = type
+      self._items = []
+      self._init_title(title)
+      self._color_panel = Setting_Color_Panel(self, default_color, type)
+      self.push_item(self._color_panel)
 
-      self._label = QLabel(self)
-      self._label.setText(title)
-      self._label.move(10, 10)
+      self.add_checkbox(title, self._change_visibility)
 
-      self._color_panel = Setting_Color_Panel(self, 0, self._label.y()+37, default_color, type)
-
-      self._check_box_label = QLabel(self)
-      self._check_box_label.setText("show " + title + "s")
-      self._check_box_label.move(30, self._color_panel.y() + self._color_panel.height() + 20)
-
-      self._check_show = QCheckBox(self)
-      self._check_show.setChecked(True)
-      self._check_show.move(130, self._color_panel.y() + self._color_panel.height() + 21)
-      self._check_show.toggled.connect(self._change_visibility)
-
-      self.init_Widget(pos)
+      self._init_Widget(pos)
 
 
-   def init_Widget(self, pos):
-      self._set_background_color()
-      self.setGeometry(
-         pos[0], 
-         pos[1], 
-         SPLINE_SETTINGS_PANEL_WIDTH, 
-         SPLINE_SETTINGS_PANEL_HEIGHT)
+   def add_item(self, item):
+      self._items.append(item)
+
+   def push_item(self, item):
+      item.move(self._next_x_coord(), self._next_y_coord())
+      self.add_item(item)
 
 
-   def _change_visibility(self, visibility):
-        if self._type == 'up': 
-            self._set_curve_visibility( visibility )
-        else : 
-            self._set_point_visibility( visibility )
+   def add_checkbox(self,title, action):
+      x = self._next_x_coord()
+      y = self._next_y_coord()
 
-   def _set_curve_visibility(self, visibility):
-      pass
+      label = QLabel(self)
+      label.setText("show " + title)
+      label.move(x, y)
 
-   def _set_point_visibility(self, visibility):
-      pass
+      check_box = QCheckBox(self)
+      check_box.setChecked(True)
+      check_box.move(x + 100, y+1)
+      check_box.toggled.connect(action)
+
+      self.add_item(label)
+      self.add_item(check_box)
 
 
    def set_change_curve_color_function(self, fun):
@@ -69,12 +62,56 @@ class Settings_Frame(QWidget):
       self._set_point_visibility = fun
 
 
+   def _init_Widget(self, pos):
+      self._set_background_color()
+      self.setGeometry(
+         pos[0], 
+         pos[1], 
+         SPLINE_SETTINGS_PANEL_WIDTH, 
+         SPLINE_SETTINGS_PANEL_HEIGHT)
+   
+
+   def _init_title(self, title):
+      self._label = QLabel(self)
+      self._label.setText(title)
+      self._label.move(10, 10)
+      self.add_item(self._label)
+
+
+   def _next_y_coord(self):
+      n = len(self._items)
+      if n == 0 : return 0
+      i = self._items[n-1]
+      return i.y() + i.height() + 15
+
+
+   def _next_x_coord(self):
+      return 30
+
+
+   def _change_visibility(self, visibility):
+        if self._type == 'up': 
+            self._set_curve_visibility( visibility )
+        else : 
+            self._set_point_visibility( visibility )
+
+
+   def _set_curve_visibility(self, visibility):
+      pass
+
+
+   def _set_point_visibility(self, visibility):
+      pass
+
+
    def _set_background_color(self, color=QtGui.QColor(62, 62, 62)):
       pal = QPalette();
       pal.setColor(QPalette.Background, color);
       self.setAutoFillBackground(True);
       self.setPalette(pal);
 
+
+   # Event
 
    def paintEvent(self, event):
       painter = QPainter(self)
