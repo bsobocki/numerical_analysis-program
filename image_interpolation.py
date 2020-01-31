@@ -26,7 +26,8 @@ class Image_Interpolation(QMainWindow):
         
         self._drawing_panel = Drawing_Panel_Curve(self)
         
-        self._settings_frame_curves = Settings_Frame(self, "Curves", DEFAULT_CURVE_COLOR, (SPLINE_SETTINGS_PANEL_CURVE_X, SPLINE_SETTINGS_PANEL_CURVE_Y), 'up')
+        self._settings_frame_curves = Settings_Frame(self, "Curves", (SPLINE_SETTINGS_PANEL_CURVE_X, SPLINE_SETTINGS_PANEL_CURVE_Y), 'up')
+        self._settings_frame_curves.add_color_panel(DEFAULT_CURVE_COLOR)
         self._settings_frame_curves.set_change_curve_color_function( 
             lambda color:  self._drawing_panel.set_curve_color(color) 
         )
@@ -34,7 +35,8 @@ class Image_Interpolation(QMainWindow):
             lambda visibility: self._drawing_panel.set_curves_visibility( visibility )
         )
         
-        self._settings_frame_points = Settings_Frame(self, "Points", DEFAULT_POINT_COLOR, (SPLINE_SETTINGS_PANEL_POINT_X, SPLINE_SETTINGS_PANEL_POINT_Y), 'down')
+        self._settings_frame_points = Settings_Frame(self, "Points", (SPLINE_SETTINGS_PANEL_POINT_X, SPLINE_SETTINGS_PANEL_POINT_Y), 'down')
+        self._settings_frame_points.add_color_panel(DEFAULT_POINT_COLOR)
         self._settings_frame_points.set_change_point_color_function( 
             lambda color:  self._drawing_panel.set_point_color(color) 
         )

@@ -8,13 +8,11 @@ from PyQt5 import QtGui
 
 
 class Settings_Frame(QWidget):
-   def __init__(self, parent, title, default_color, pos, type):
+   def __init__(self, parent, title, pos, type):
       super().__init__(parent)
       self._type = type
       self._items = []
       self._init_title(title)
-      self._color_panel = Setting_Color_Panel(self, default_color, type)
-      self.push_item(self._color_panel)
 
       self.add_checkbox(title, self._change_visibility)
 
@@ -44,6 +42,11 @@ class Settings_Frame(QWidget):
 
       self.add_item(label)
       self.add_item(check_box)
+
+
+   def add_color_panel(self, default_color):
+      self._color_panel = Setting_Color_Panel(self, default_color, self._type)
+      self.push_item(self._color_panel)
 
 
    def set_change_curve_color_function(self, fun):
