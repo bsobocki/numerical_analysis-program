@@ -6,11 +6,9 @@ from PyQt5.QtCore import Qt, QLineF, QRectF, QRect, QSize
 from PyQt5 import QtGui
 
 
-class Setting_Color_Panel(QWidget):
-    def __init__(self, parent, default_color, type):
+class SettingColorPanel(QWidget):
+    def __init__(self, parent, default_color, update_color):
         super().__init__(parent)
-
-        self._type = type # 'up' / 'down'
 
         self.resize(SPLINE_SETTINGS_PANEL_WIDTH, 80)
 
@@ -27,6 +25,8 @@ class Setting_Color_Panel(QWidget):
         
         self._add_label("blue:")
         self._blue_sp = self._create_spin_box(60, self._color.blue(), self.change_blue_event)
+
+        self.update_object_color = update_color
 
     
     def _add_label(self, text):
@@ -74,34 +74,23 @@ class Setting_Color_Panel(QWidget):
         painter.drawEllipse(self._circle[0], self._circle[1], self._circle[2], self._circle[3])
 
 
-    def update_color(self):
-        if self._type == 'up': 
-            self.change_curve_color(self._color)
-        else : 
-            self.change_point_color(self._color)
-
-
     def change_red_event(self):
         self._color.setRed(self._red_sp.value())
-        self.update_color()
+        self.update_object_color(self._color)
         self.update()
 
 
     def change_green_event(self):
         self._color.setGreen(self._green_sp.value())
-        self.update_color()
+        self.update_object_color(self._color)
         self.update()
 
 
     def change_blue_event(self):
         self._color.setBlue(self._blue_sp.value())
-        self.update_color()
+        self.update_object_color(self._color)
         self.update()
 
 
-    def change_curve_color(self, color):
-        pass
-
-
-    def change_point_color(self, color):
+    def update_object_color(self, color):
         pass

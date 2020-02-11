@@ -5,7 +5,6 @@ class Parametrical_Curve:
         self._xs = []
         self._ys = []    
     
-    @abc.abstractmethod
     def get_xs_ys(self):
         return self._xs, self._ys
 

@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import QMenu, QMenuBar, QAction
 
-class Menu_Bar(QMenuBar):
+class MenuBar(QMenuBar):
     def __init__(self, parent):
         super().__init__(parent=parent)
         self.menu_names = ["File", "Edit", "Tools", "Windows", "Settings", "Help"]

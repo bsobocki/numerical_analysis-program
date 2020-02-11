@@ -1,7 +1,7 @@
-from window_tools.menu_bar import Menu_Bar
-from window_tools.drawing_panel.constants import *
-from window_tools.drawing_panel.drawing_panel import Drawing_Panel_Curve
-from window_tools.settings_panels.settings_panels import Settings_Frame
+from window_tools.menu_bar import MenuBar
+from window_tools.drawing_panels.constants import *
+from window_tools.drawing_panels.spline_drawing_panel import SplineDrawingPanel
+from window_tools.settings_panels.settings_panels import SettingsFrame
 
 import sys
 
@@ -21,27 +21,28 @@ class Image_Interpolation(QMainWindow):
 
 
     def init_UI(self):
-        self._menu_bar = Menu_Bar(self)
+        self._menu_bar = MenuBar(self)
         self._menu_bar.set_spline_creator_action(self.new_spline_creation_project)
         
-        self._drawing_panel = Drawing_Panel_Curve(self)
+        self._drawing_panel = SplineDrawingPanel(self)
         
-        self._settings_frame_curves = Settings_Frame(self, "Curves", (SPLINE_SETTINGS_PANEL_CURVE_X, SPLINE_SETTINGS_PANEL_CURVE_Y), 'up')
-        self._settings_frame_curves.add_color_panel(DEFAULT_CURVE_COLOR)
-        self._settings_frame_curves.set_change_curve_color_function( 
-            lambda color:  self._drawing_panel.set_curve_color(color) 
-        )
-        self._settings_frame_curves.set_change_curve_visibility_function(
-            lambda visibility: self._drawing_panel.set_curves_visibility( visibility )
+        self._settings_frame_curves = SettingsFrame(self, "Curves", (SPLINE_SETTINGS_PANEL_CURVE_X, SPLINE_SETTINGS_PANEL_CURVE_Y), 'up')
+        self._settings_frame_curves.add_color_panel(
+            DEFAULT_CURVE_COLOR,
+            lambda color:  self._drawing_panel.set_curve_color(color))
+        self._settings_frame_curves.add_checkbox(
+            "Curves", 
+            lambda : self._drawing_panel.switch_curves_visibility()
         )
         
-        self._settings_frame_points = Settings_Frame(self, "Points", (SPLINE_SETTINGS_PANEL_POINT_X, SPLINE_SETTINGS_PANEL_POINT_Y), 'down')
-        self._settings_frame_points.add_color_panel(DEFAULT_POINT_COLOR)
-        self._settings_frame_points.set_change_point_color_function( 
+        self._settings_frame_points = SettingsFrame(self, "Points", (SPLINE_SETTINGS_PANEL_POINT_X, SPLINE_SETTINGS_PANEL_POINT_Y), 'down')
+        self._settings_frame_points.add_color_panel(
+            DEFAULT_POINT_COLOR,
             lambda color:  self._drawing_panel.set_point_color(color) 
         )
-        self._settings_frame_points.set_change_point_visibility_function(
-            lambda visibility: self._drawing_panel.set_points_visibility( visibility )
+        self._settings_frame_points.add_checkbox(
+            "Points",
+            lambda : self._drawing_panel.switch_points_visibility()
         )
 
 

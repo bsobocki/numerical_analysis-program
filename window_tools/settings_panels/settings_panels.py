@@ -1,5 +1,5 @@
 from window_tools.settings_panels.constants import *
-from window_tools.settings_panels.setting_color_panel import Setting_Color_Panel
+from window_tools.settings_panels.setting_color_panel import SettingColorPanel
 
 from PyQt5.QtWidgets import QLabel, QFrame, QWidget, QSpinBox, QCheckBox
 from PyQt5.QtGui import QBrush, QPixmap, QPainter, QPen, QColor, QPalette
@@ -7,20 +7,21 @@ from PyQt5.QtCore import Qt, QLineF, QRectF, QRect, QSize
 from PyQt5 import QtGui
 
 
-class Settings_Frame(QWidget):
+class SettingsFrame(QWidget):
    def __init__(self, parent, title, pos, type):
       super().__init__(parent)
       self._type = type
       self._items = []
-      self._init_title(title)
-
-      self.add_checkbox(title, self._change_visibility)
+      self._title = title
+      
+      self._set_title(self._title)
 
       self._init_Widget(pos)
 
 
    def add_item(self, item):
       self._items.append(item)
+
 
    def push_item(self, item):
       item.move(self._next_x_coord(), self._next_y_coord())
@@ -34,35 +35,20 @@ class Settings_Frame(QWidget):
       label = QLabel(self)
       label.setText("show " + title)
       label.move(x, y)
-
-      check_box = QCheckBox(self)
-      check_box.setChecked(True)
-      check_box.move(x + 100, y+1)
-      check_box.toggled.connect(action)
-
+      label.mousePressEvent = lambda ev: action()
+      label.linkActivated.connect(action)
+      
       self.add_item(label)
-      self.add_item(check_box)
 
 
-   def add_color_panel(self, default_color):
-      self._color_panel = Setting_Color_Panel(self, default_color, self._type)
+   def add_color_panel(self, default_color, update_object_color):
+      self._color_panel = SettingColorPanel(self, default_color, update_object_color)
       self.push_item(self._color_panel)
 
 
-   def set_change_curve_color_function(self, fun):
-      self._color_panel.change_curve_color = fun
+   def set_change_color_function(self, fun):
+      self._color_panel.update_object_color = fun
 
-
-   def set_change_point_color_function(self, fun):
-      self._color_panel.change_point_color = fun
-
-   
-   def set_change_curve_visibility_function(self, fun):
-      self._set_curve_visibility = fun
-
-
-   def set_change_point_visibility_function(self, fun):
-      self._set_point_visibility = fun
 
 
    def _init_Widget(self, pos):
@@ -74,7 +60,7 @@ class Settings_Frame(QWidget):
          SPLINE_SETTINGS_PANEL_HEIGHT)
    
 
-   def _init_title(self, title):
+   def _set_title(self, title):
       self._label = QLabel(self)
       self._label.setText(title)
       self._label.move(10, 10)
@@ -90,21 +76,6 @@ class Settings_Frame(QWidget):
 
    def _next_x_coord(self):
       return 30
-
-
-   def _change_visibility(self, visibility):
-        if self._type == 'up': 
-            self._set_curve_visibility( visibility )
-        else : 
-            self._set_point_visibility( visibility )
-
-
-   def _set_curve_visibility(self, visibility):
-      pass
-
-
-   def _set_point_visibility(self, visibility):
-      pass
 
 
    def _set_background_color(self, color=QtGui.QColor(62, 62, 62)):

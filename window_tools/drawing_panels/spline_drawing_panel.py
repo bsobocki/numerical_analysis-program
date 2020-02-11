@@ -1,5 +1,5 @@
-from window_tools.drawing_panel.numerical_tools.spline_curve import *
-from window_tools.drawing_panel.constants import *
+from window_tools.drawing_panels.numerical_tools.spline_curve import *
+from window_tools.drawing_panels.constants import *
 
 from PyQt5.QtWidgets import QGraphicsScene, QGraphicsView, QLabel
 from PyQt5.QtGui import QBrush, QPixmap, QPainter, QPen, QColor
@@ -8,7 +8,7 @@ from PyQt5.QtCore import Qt, QLineF, QRectF, QRect, QSize, QPointF
 import json
 
 
-class Drawing_Panel_Curve(QGraphicsView):
+class SplineDrawingPanel(QGraphicsView):
     def __init__(self, parent):
         super().__init__(parent)
         self._curves_visibility = True 
@@ -19,7 +19,7 @@ class Drawing_Panel_Curve(QGraphicsView):
         self._objects_points = [[]]
 
         self._pixmap_src = None
-        self._pixmap_pos = []
+        self._pixmap_pos = [0,0]
         
         self._curve_pen = QPen()
         self._curve_pen.setWidth(3)
@@ -144,6 +144,7 @@ class Drawing_Panel_Curve(QGraphicsView):
                         self.scene().addLine(line, pen=self._curve_pen) 
 
 
+
     def _draw_points(self):
         if self._objects_points_visibility:
             for points in self._objects_points:
@@ -158,11 +159,11 @@ class Drawing_Panel_Curve(QGraphicsView):
         self.update()
                      
 
-    def set_curves_visibility(self, visibility):
-        self._curves_visibility = visibility
+    def switch_curves_visibility(self):
+        self._curves_visibility = not self._curves_visibility
         self._redraw()
 
 
-    def set_points_visibility(self, visibility):
-        self._objects_points_visibility = visibility
+    def switch_points_visibility(self):
+        self._objects_points_visibility = not self._objects_points_visibility
         self._redraw()

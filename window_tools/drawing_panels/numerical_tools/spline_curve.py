@@ -1,5 +1,5 @@
-from window_tools.drawing_panel.numerical_tools.parametrical_curve import Parametrical_Curve 
-from window_tools.drawing_panel.numerical_tools.spline_interpolation import Spline
+from window_tools.drawing_panels.numerical_tools.parametrical_curve import Parametrical_Curve 
+from window_tools.drawing_panels.numerical_tools.spline_interpolation import Spline
 
 class Spline_Curve(Parametrical_Curve):
     def __init__(self, xs, ys):
