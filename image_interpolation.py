@@ -26,25 +26,30 @@ class Image_Interpolation(QMainWindow):
         
         self._drawing_panel = SplineDrawingPanel(self)
         
-        self._settings_frame_curves = SettingsFrame(self, "Curves", (SPLINE_SETTINGS_PANEL_CURVE_X, SPLINE_SETTINGS_PANEL_CURVE_Y), 'up')
+        self._settings_frame_curves = SettingsFrame(
+            self, 
+            "Curves", 
+            (SPLINE_SETTINGS_PANEL_CURVE_X, SPLINE_SETTINGS_PANEL_CURVE_Y))
         self._settings_frame_curves.add_color_panel(
             DEFAULT_CURVE_COLOR,
             lambda color:  self._drawing_panel.set_curve_color(color))
-        self._settings_frame_curves.add_checkbox(
-            "Curves", 
+        self._settings_frame_curves.add_clicked_label(
+            "Show Curves", 
             lambda : self._drawing_panel.switch_curves_visibility()
         )
         
-        self._settings_frame_points = SettingsFrame(self, "Points", (SPLINE_SETTINGS_PANEL_POINT_X, SPLINE_SETTINGS_PANEL_POINT_Y), 'down')
+        self._settings_frame_points = SettingsFrame(
+            self, 
+            "Points", 
+            (SPLINE_SETTINGS_PANEL_POINT_X, SPLINE_SETTINGS_PANEL_POINT_Y))
         self._settings_frame_points.add_color_panel(
             DEFAULT_POINT_COLOR,
             lambda color:  self._drawing_panel.set_point_color(color) 
         )
-        self._settings_frame_points.add_checkbox(
-            "Points",
+        self._settings_frame_points.add_clicked_label(
+            "Show Points",
             lambda : self._drawing_panel.switch_points_visibility()
         )
-
 
         self._new_button = self._create_button(
             QIcon("icons/plus_icon.png"), 
@@ -92,7 +97,8 @@ class Image_Interpolation(QMainWindow):
             SPLINE_WINDOW_X, 
             SPLINE_WINDOW_Y, 
             SPLINE_WINDOW_WIDTH, 
-            SPLINE_WINDOW_HEIGHT)
+            SPLINE_WINDOW_HEIGHT
+        )
 
         self.setWindowTitle("Spline Interpolation")
 
@@ -106,6 +112,7 @@ class Image_Interpolation(QMainWindow):
         button.setToolTip(tooltip)
         return button
 
+
     def open_img(self):
         dlg = QFileDialog()
         dlg.setFileMode(QFileDialog.AnyFile)
@@ -114,6 +121,7 @@ class Image_Interpolation(QMainWindow):
         if dlg.exec_():
             filenames = dlg.selectedFiles()
             self._drawing_panel.set_img(filenames[0])
+
 
     def open_curve(self):
         dlg = QFileDialog()

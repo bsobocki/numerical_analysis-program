@@ -8,9 +8,8 @@ from PyQt5 import QtGui
 
 
 class SettingsFrame(QWidget):
-   def __init__(self, parent, title, pos, type):
+   def __init__(self, parent, title, pos):
       super().__init__(parent)
-      self._type = type
       self._items = []
       self._title = title
       
@@ -28,12 +27,12 @@ class SettingsFrame(QWidget):
       self.add_item(item)
 
 
-   def add_checkbox(self,title, action):
+   def add_clicked_label(self,title, action):
       x = self._next_x_coord()
       y = self._next_y_coord()
 
       label = QLabel(self)
-      label.setText("show " + title)
+      label.setText(title)
       label.move(x, y)
       label.mousePressEvent = lambda ev: action()
       label.linkActivated.connect(action)
