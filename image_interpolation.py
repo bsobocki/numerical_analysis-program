@@ -29,7 +29,7 @@ class Image_Interpolation(QMainWindow):
         self._settings_frame_curves = SettingsFrame(
             self, 
             "Curves", 
-            (SPLINE_SETTINGS_PANEL_CURVE_X, SPLINE_SETTINGS_PANEL_CURVE_Y))
+            (SETTINGS_PANEL_CURVE_X, SETTINGS_PANEL_CURVE_Y))
         self._settings_frame_curves.add_color_panel(
             DEFAULT_CURVE_COLOR,
             lambda color:  self._drawing_panel.set_curve_color(color))
@@ -41,7 +41,7 @@ class Image_Interpolation(QMainWindow):
         self._settings_frame_points = SettingsFrame(
             self, 
             "Points", 
-            (SPLINE_SETTINGS_PANEL_POINT_X, SPLINE_SETTINGS_PANEL_POINT_Y))
+            (SETTINGS_PANEL_POINT_X, SETTINGS_PANEL_POINT_Y))
         self._settings_frame_points.add_color_panel(
             DEFAULT_POINT_COLOR,
             lambda color:  self._drawing_panel.set_point_color(color) 
@@ -53,7 +53,7 @@ class Image_Interpolation(QMainWindow):
 
         self._new_button = self._create_button(
             QIcon("icons/plus_icon.png"), 
-            SPLINE_DRAWING_PANEL_Y,
+            DRAWING_PANEL_Y,
             self._drawing_panel.new_curve,
             "Add a new curve"
         )
@@ -93,11 +93,18 @@ class Image_Interpolation(QMainWindow):
             "Delete background image"
         )
 
+        self._undo_button = self._create_button(
+            QIcon("icons/undo_icon.png"),
+            self._reset_file_button.y() + self._reset_file_button.height() + 40,
+            self.undo,
+            "Undo"
+        )
+
         self.setGeometry(
-            SPLINE_WINDOW_X, 
-            SPLINE_WINDOW_Y, 
-            SPLINE_WINDOW_WIDTH, 
-            SPLINE_WINDOW_HEIGHT
+            WINDOW_X, 
+            WINDOW_Y, 
+            WINDOW_WIDTH, 
+            WINDOW_HEIGHT
         )
 
         self.setWindowTitle("Spline Interpolation")
@@ -145,6 +152,9 @@ class Image_Interpolation(QMainWindow):
 
     def reset_img(self):
         self._drawing_panel.set_img("")
+
+    def undo(self):
+        self._drawing_panel.delete_last_point()
 
 
 
