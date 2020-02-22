@@ -120,8 +120,8 @@ class DrawingPanel(QGraphicsView):
 
     def delete_last_point(self):
         if len(self._points) > 0 and len(self._points[0]) > 0:
-            del self._points[-1][-1]
-            if len(self._points[-1]) == 0 and len(self._points) > 1:  del self._points[-1]
+            if len(self._points[-1]) >0 : del self._points[-1][-1]
+            if len(self._points) > 1 and len(self._points[-1]) == 0 :  del self._points[-1]
             self._redraw()
 
 
