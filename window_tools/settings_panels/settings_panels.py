@@ -23,18 +23,19 @@ class SettingsFrame(QWidget):
 
 
    def push_item(self, item):
-      item.move(self._next_x_coord(), self._next_y_coord())
+      x,y = self._next_coords()
+      item.move(x,y)
       self.add_item(item)
 
 
    def add_clicked_label(self,title, action):
-      x = self._next_x_coord()
-      y = self._next_y_coord()
+      x,y = self._next_coords()
 
       label = QLabel(self)
       label.setText(title)
-      label.move(x, y)
-      label.mousePressEvent = lambda ev: action()
+      label.move(x,y)
+      label.resize(100,30)
+      label.mousePressEvent = lambda ev: self._use_label(label, action)
       label.linkActivated.connect(action)
       
       self.add_item(label)
@@ -66,15 +67,11 @@ class SettingsFrame(QWidget):
       self.add_item(self._label)
 
 
-   def _next_y_coord(self):
+   def _next_coords(self):
       n = len(self._items)
       if n == 0 : return 0
       i = self._items[n-1]
-      return i.y() + i.height() + 15
-
-
-   def _next_x_coord(self):
-      return 30
+      return 30, i.y() + i.height() + 15
 
 
    def _set_background_color(self, color=QtGui.QColor(62, 62, 62)):
@@ -82,6 +79,17 @@ class SettingsFrame(QWidget):
       pal.setColor(QPalette.Background, color);
       self.setAutoFillBackground(True);
       self.setPalette(pal);
+
+
+   def _use_label(self, label, action):
+      action()
+      text = ""
+      if label.text() == "Hide " + self._title:
+         text = "Show " + self._title
+      else:
+         text = "Hide " + self._title
+      label.setText(text)
+      label.resize(100,30)
 
 
    # Event
