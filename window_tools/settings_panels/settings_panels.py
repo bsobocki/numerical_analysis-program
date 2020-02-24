@@ -49,6 +49,9 @@ class SettingsFrame(QWidget):
    def set_change_color_function(self, fun):
       self._color_panel.update_object_color = fun
 
+   def get_color(self):
+      return self._color_panel.get_color()
+
 
 
    def _init_Widget(self, pos):

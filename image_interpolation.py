@@ -63,10 +63,22 @@ class Image_Interpolation(QMainWindow):
     def reset_img(self):
         self._drawing_panel.set_img("")
 
+    def reset_data(self):
+        self._points_manager.reset()
+        self._drawing_panel.redraw()
+
     def undo(self):
         self._points_manager.delete_last_point()
         self._drawing_panel.redraw()
 
+    def edit_mode_on(self):
+        self._drawing_panel.edit_mode(self._points_manager.objects())
+        self._drawing_panel.mousePressEvent = self._panel_empty_function
+
+    def edit_mode_off(self):
+        self._drawing_panel.set_objects(self._points_manager.objects())
+        self._drawing_panel.redraw()
+        self._drawing_panel.mousePressEvent = self._panelMousePressEvent
 
 
     # Actions
@@ -74,7 +86,6 @@ class Image_Interpolation(QMainWindow):
     def new_spline_creation_project(self):
         i = Image_Interpolation()
         self.windows.append(i)
-
 
 
     # Initialize
@@ -132,7 +143,7 @@ class Image_Interpolation(QMainWindow):
         self._reset_button = self._create_button(
             QIcon("icons/X_icon.png"), 
             self._new_button.y() + self._new_button.height() + 10,
-            self._points_manager.reset,
+            self.reset_data,
             "Delete all points"
         )
 
@@ -171,6 +182,20 @@ class Image_Interpolation(QMainWindow):
             "Undo"
         )
 
+        self._edit_on_button = self._create_button(
+            QIcon("icons/edit_on_icon.png"),
+            self._undo_button.y() + self._undo_button.height() + 40,
+            self.edit_mode_on,
+            "Run Edit Mode"
+        )
+
+        self._edit_off_button = self._create_button(
+            QIcon("icons/edit_off_icon.png"),
+            self._edit_on_button.y() + self._edit_on_button.height() + 10,
+            self.edit_mode_off,
+            "Run Edit Mode"
+        )
+
 
     def _create_button(self, icon, y, action, tooltip):
         button = QPushButton(self)
@@ -186,5 +211,8 @@ class Image_Interpolation(QMainWindow):
     def _panelMousePressEvent(self, event):
         x = event.pos().x() - self._drawing_panel._pixmap_pos[0]
         y = event.pos().y() - self._drawing_panel._pixmap_pos[1]
-        self._points_manager.add_point(x, y)
+        self._points_manager.add_point(x, y, self._settings_frame_points.get_color())
         self._drawing_panel.redraw()
+
+    def _panel_empty_function(self, event):
+        pass

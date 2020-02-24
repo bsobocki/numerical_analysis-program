@@ -1,6 +1,6 @@
 from window_tools.drawing_panels.constants import *
 
-from PyQt5.QtWidgets import QGraphicsScene, QGraphicsView, QLabel
+from PyQt5.QtWidgets import QGraphicsScene, QGraphicsView, QLabel, QGraphicsScene
 from PyQt5.QtGui import QBrush, QPixmap, QPainter, QPen, QColor
 from PyQt5.QtCore import Qt, QLineF, QRectF, QRect, QSize, QPointF
 
@@ -11,6 +11,7 @@ from window_tools.drawing_panels.points_manager import Points_Manager
 class DrawingPanel(QGraphicsView):
     def __init__(self, parent, points):
         super().__init__(parent)
+        self.edit_mode_off = True
         self.setScene(QGraphicsScene(self))
 
         self._curves_visibility = True 
@@ -32,6 +33,7 @@ class DrawingPanel(QGraphicsView):
         self.setSceneRect(
             QRectF( 0, 0, self.width()-10, self.height()-10)
         )
+
         self.show()
 
 
@@ -42,6 +44,9 @@ class DrawingPanel(QGraphicsView):
             DRAWING_PANEL_WIDTH, 
             DRAWING_PANEL_HEIGHT)
         self.setMouseTracking(True)
+
+    def set_objects(self, objects):
+        self._objects = objects
 
 
     """ CURVE """
@@ -107,6 +112,14 @@ class DrawingPanel(QGraphicsView):
         self._draw_points()
         self.update()
 
+    def edit_mode(self, objects):
+        self.edit_mode_off = False
+        for item in self.scene().items():
+            self.scene().removeItem(item)
+        for object in objects:
+            for point in object:
+                self.scene().addItem(point)
+
 
     """ DRAWING """
         
@@ -120,8 +133,8 @@ class DrawingPanel(QGraphicsView):
         if self._curves_visibility:
             for obj in self._objects:
                 if len(obj) > 1 :
-                    x = [p[0] for p in obj]
-                    y = [p[1] for p in obj]
+                    x = [p.x() for p in obj]
+                    y = [p.y() for p in obj]
 
                     xs, ys = self._get_curve_xs_ys(x,y)
 
@@ -133,4 +146,4 @@ class DrawingPanel(QGraphicsView):
         if self._points_visibility:
             for object in self._objects:
                 for point in object:
-                    self.scene().addEllipse(point[0], point[1], 4, 4, self._point_pen)  
+                    self.scene().addEllipse(point.x(), point.y(), 4, 4, self._point_pen)  

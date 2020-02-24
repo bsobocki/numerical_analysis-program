@@ -28,28 +28,6 @@ class SettingColorPanel(QWidget):
 
         self.update_object_color = update_color
 
-    
-    def _add_label(self, text):
-        n = len(self._labels)
-
-        label = QLabel(self)
-        label.setText(text)
-        label.move(0, n*30)
-        label.resize(70, 20)
-
-        self._labels.append(label)
-
-
-    def _create_spin_box(self, y, color, valueChanged):
-        sp = QSpinBox(self)
-        sp.move(60, y)
-        sp.resize(60, 20)
-        sp.setMinimum(0)
-        sp.setMaximum(255)
-        sp.setValue(color)
-        sp.valueChanged.connect(valueChanged)
-        return sp
-
 
     def paintEvent(self, event):
         painter = QPainter(self)
@@ -94,3 +72,28 @@ class SettingColorPanel(QWidget):
 
     def update_object_color(self, color):
         pass
+
+    def get_color(self):
+        return self._color
+
+    
+    def _add_label(self, text):
+        n = len(self._labels)
+
+        label = QLabel(self)
+        label.setText(text)
+        label.move(0, n*30)
+        label.resize(70, 20)
+
+        self._labels.append(label)
+
+
+    def _create_spin_box(self, y, color, valueChanged):
+        sp = QSpinBox(self)
+        sp.move(60, y)
+        sp.resize(60, 20)
+        sp.setMinimum(0)
+        sp.setMaximum(255)
+        sp.setValue(color)
+        sp.valueChanged.connect(valueChanged)
+        return sp

@@ -18,13 +18,16 @@ class Points_Manager():
     def add_objects(self, objects):
         self._objects += objects
     
-    def add_point(self, x, y):
+    def add_point(self, x, y, color):
         index = len(self._objects)-1
-        self._objects[index].append((x,y))
+        point = Point([x,y,color])
+        self._objects[index].append(point)
 
 
     def reset(self):
-        self._objects = [[]]
+        for obj in self._objects:
+            for i in range(0, len(obj)):
+                del obj[-1]
 
     def switch_visibility(self):
         self._visibility = not self._visibility
