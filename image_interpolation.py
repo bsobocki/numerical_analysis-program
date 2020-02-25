@@ -76,8 +76,7 @@ class Image_Interpolation(QMainWindow):
         self._drawing_panel.mousePressEvent = self._panel_empty_function
 
     def edit_mode_off(self):
-        self._drawing_panel.set_objects(self._points_manager.objects())
-        self._drawing_panel.redraw()
+        self._drawing_panel.turn_off_edit_mode(self._points_manager.objects())
         self._drawing_panel.mousePressEvent = self._panelMousePressEvent
 
 

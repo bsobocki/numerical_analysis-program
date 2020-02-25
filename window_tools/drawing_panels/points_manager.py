@@ -1,5 +1,3 @@
-from window_tools.drawing_panels.point import Point
-
 class Points_Manager():
     def __init__(self):
         self._visibility = True
@@ -20,8 +18,7 @@ class Points_Manager():
     
     def add_point(self, x, y, color):
         index = len(self._objects)-1
-        point = Point([x,y,color])
-        self._objects[index].append(point)
+        self._objects[index].append([x,y,color])
 
 
     def reset(self):

@@ -6,6 +6,7 @@ from PyQt5.QtCore import Qt, QLineF, QRectF, QRect, QSize, QPointF
 
 import json
 from window_tools.drawing_panels.points_manager import Points_Manager
+from window_tools.drawing_panels.ellipse import Ellipse
 
 
 class DrawingPanel(QGraphicsView):
@@ -92,7 +93,7 @@ class DrawingPanel(QGraphicsView):
     """ ACTIONS """
 
     def redraw(self):
-        self._reset_scene()  
+        self._reset_scene()
         self._draw_curves()
         self._draw_points()
         self.update()
@@ -114,11 +115,19 @@ class DrawingPanel(QGraphicsView):
 
     def edit_mode(self, objects):
         self.edit_mode_off = False
+
         for item in self.scene().items():
             self.scene().removeItem(item)
+
         for object in objects:
             for point in object:
-                self.scene().addItem(point)
+                ellipse = Ellipse(point)
+                self.scene().addItem(ellipse)
+    
+    def turn_off_edit_mode(self, objects):
+        self.setScene(QGraphicsScene())
+        self._objects = objects
+        self.redraw()
 
 
     """ DRAWING """
@@ -133,8 +142,8 @@ class DrawingPanel(QGraphicsView):
         if self._curves_visibility:
             for obj in self._objects:
                 if len(obj) > 1 :
-                    x = [p.x() for p in obj]
-                    y = [p.y() for p in obj]
+                    x = [p[0] for p in obj]
+                    y = [p[1] for p in obj]
 
                     xs, ys = self._get_curve_xs_ys(x,y)
 
@@ -146,4 +155,4 @@ class DrawingPanel(QGraphicsView):
         if self._points_visibility:
             for object in self._objects:
                 for point in object:
-                    self.scene().addEllipse(point.x(), point.y(), 4, 4, self._point_pen)  
+                    self.scene().addEllipse(point[0], point[1], 4, 4, self._point_pen)  

@@ -2,11 +2,11 @@ from PyQt5.QtWidgets import QApplication ,QWidget, QGraphicsEllipseItem
 from PyQt5.Qt import Qt
 from PyQt5.QtCore import QPointF
 
-class Point(QGraphicsEllipseItem):
+class Ellipse(QGraphicsEllipseItem):
     def __init__(self, settings):
         top_left_x, top_left_y, color = settings
         super().__init__(0, 0, 7, 7)  # Initial position must be (0,0) to avoid bias in coordinate system...
-        self.setPos(top_left_x, top_left_y)  # ...but we can use setPos to move the object.
+        self.setPos(top_left_x-3, top_left_y-3)  # ...but we can use setPos to move the object.
         self.setBrush(color)
         self.setAcceptHoverEvents(True)  # hover events are used to change mouse cursor
         self.settings = settings
@@ -32,6 +32,7 @@ class Point(QGraphicsEllipseItem):
         self.setPos(QPointF(new_top_left_corner_x, new_top_left_corner_y))  # update disk top left corner
         self.settings[0] = new_top_left_corner_x
         self.settings[1] = new_top_left_corner_y
+        self._redraw()
         
     def mousePressEvent(self, event: 'QGraphicsSceneMouseEvent'): pass
 
@@ -42,3 +43,9 @@ class Point(QGraphicsEllipseItem):
 
     def dragMoveEvent(self, event):
         return super().dragMoveEvent(self, event)
+
+    def _redraw(self): 
+        pass
+
+    def set_function_redraw(self, fun): 
+        self._redraw = fun
