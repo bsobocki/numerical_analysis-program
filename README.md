@@ -1,4 +1,4 @@
-# numerical_analysis-program
+# image interpolation - numerical_analysis
 Program using tools from Numerical Analysis course.
 
 # How it looks
